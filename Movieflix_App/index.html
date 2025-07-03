@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Movieflix - Your Ultimate Movie Destination</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom CSS Variables for Theming (Hotstar Inspired) */
+        :root {
+            --primary-dark: #100B20; /* Deep dark purple-ish for main background */
+            --secondary-dark: #1A133A; /* Slightly lighter for sections/cards */
+            --card-bg: #221A42; /* Card background, deeper purple */
+            --accent-red: #E10050; /* Hotstar's vibrant red */
+            --accent-blue: #00A6D1; /* Hotstar's vibrant blue */
+            --accent-gradient-start: #E10050; /* Red for gradients */
+            --accent-gradient-end: #00A6D1;    /* Blue for gradients */
+            --text-light: #E0E0E0; /* Off-white for general text */
+            --text-muted: #9AA0B3; /* Softer gray for secondary text */
+            --border-color: rgba(255, 255, 255, 0.1); /* Subtle borders */
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scrolling unless necessary */
+        }
+
+        /* Global Padding (Responsive) */
+        .p-4 { padding: 1rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        @media (min-width: 768px) {
+            .md\:p-8 { padding: 2rem; }
+            .md\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        }
+
+        /* Main container width for desktop feel */
+        .max-w-screen-2xl {
+            max-width: 1280px; /* Max width set to original desktop width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Movieflix Title Styling - Adjusted for responsiveness */
+        .movieflix-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 3rem; /* Mobile default */
+            line-height: 1.1;
+            background: linear-gradient(45deg, var(--accent-red) 10%, var(--accent-blue) 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            text-shadow: 0 0 5px rgba(225, 0, 80, 0.2), 0 0 10px rgba(0, 166, 209, 0.15); /* Slightly lighter shadow for mobile */
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .movieflix-title {
+                font-size: 5rem; /* Tablet/Desktop size */
+                text-shadow: 0 0 10px rgba(225, 0, 80, 0.4), 0 0 20px rgba(0, 166, 209, 0.3);
+            }
+        }
+        @media (min-width: 1024px) {
+            .movieflix-title {
+                font-size: 7rem; /* Large Desktop size */
+            }
+        }
+
+        .subtitle-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 0.5rem; /* Adjusted for mobile */
+            letter-spacing: 0.05em; /* Adjusted for mobile */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Adjusted for mobile */
+            font-size: 1rem; /* Mobile default */
+            display: block;
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .subtitle-text {
+                margin-top: 0.75rem;
+                letter-spacing: 0.08em;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                font-size: 1.5rem; /* Tablet/Desktop size */
+            }
+        }
+        @media (min-width: 1024px) {
+            .subtitle-text {
+                font-size: 1.875rem; /* Large Desktop size */
+            }
+        }
+
+        /* Movie Card Styling */
+        .movie-card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Adjusted shadow for mobile */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid var(--border-color);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .movie-card:hover {
+            transform: translateY(-8px) scale(1.02); /* Slightly less aggressive hover for mobile feel */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); /* Adjusted shadow for mobile */
+            z-index: 10;
+        }
+
+        /* --- START OF REVISED CHANGES FOR MOVIE IMAGE ---  */
+        .movie-image {
+            width: 100%;
+            /* Fixed aspect ratio to 4:4 (square) */
+            aspect-ratio: 4 / 4;
+            /* Use object-fit: contain to show the entire image, potentially with black bars */
+            object-fit: contain;
+            background-color: black; /* This background will show if image is smaller or has different aspect ratio */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        /* No specific max-height needed for responsive scaling when using aspect-ratio and width:100% */
+        .movie-card:hover .movie-image {
+            transform: scale(1.03);
+        }
+        /* --- END OF REVISED CHANGES FOR MOVIE IMAGE ---  */
+
+        .movie-card .p-4 {
+            padding: 0.75rem; /* Adjusted padding for mobile */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .movie-card h3 {
+            font-size: 1rem; /* Mobile title font size */
+            margin-bottom: 0.25rem; /* Adjusted for mobile */
+            line-height: 1.2;
+        }
+        @media (min-width: 768px) {
+            .movie-card h3 {
+                font-size: 1.1rem; /* Tablet/Desktop font size */
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
+            }
+        }
+        .movie-card p {
+            font-size: 0.8rem; /* Mobile category font size */
+            margin-bottom: 0;
+            color: var(--text-muted);
+        }
+        @media (min-width: 768px) {
+            .movie-card p {
+                font-size: 0.9rem; /* Tablet/Desktop category font size */
+            }
+        }
+
+        .view-movie-button {
+            display: none;
+        }
+
+        /* Category Button Styling (Responsive) */
+        .category-button {
+            background-color: var(--secondary-dark);
+            color: var(--text-muted);
+            border-radius: 9999px;
+            padding: 0.4rem 1rem; /* Adjusted padding for mobile */
+            font-weight: 500;
+            font-size: 0.9rem; /* Adjusted font size for mobile */
+            white-space: nowrap;
+            transition: background-color 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .category-button:hover {
+            background-color: rgba(225, 0, 80, 0.2);
+            color: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(225, 0, 80, 0.2);
+        }
+        .category-button.active {
+            background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
+            color: white;
+            box-shadow: 0 2px 8px rgba(225, 0, 80, 0.4);
+            transform: scale(1.05);
+            border-color: transparent;
+        }
+        @media (min-width: 768px) {
+            .category-button {
+                padding: 0.5rem 1.25rem;
+                font-size: 1rem;
+            }
+            .category-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 10px rgba(225, 0, 80, 0.3);
+            }
+            .category-button.active {
+                box-shadow: 0 44px 15px rgba(225, 0, 80, 0.5);
+                transform: scale(1.08);
+            }
+        }
+
+        /* Category buttons container - ALWAYS SINGLE LINE, SCROLLABLE */
+        .category-buttons-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 0.5rem;
+            justify-content: flex-start; /* Default: Left align */
+            flex-wrap: nowrap;
+            display: flex;
+            gap: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-top: 1rem; /* Space from search bar */
+            margin-bottom: 1.5rem; /* Space before ad */
+        }
+        @media (min-width: 768px) {
+            .category-buttons-container {
+                justify-content: center; /* On desktop, center align */
+                gap: 1rem;
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        .category-buttons-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .category-buttons-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-blue));
+            border-radius: 3px;
+        }
+        .category-buttons-container::-webkit-scrollbar-track {
+            background-color: var(--primary-dark);
+        }
+
+        /* "Browse All Categories" button container */
+        .browse-categories-container {
+            display: flex;
+            justify-content: flex-start; /* Left aligned for mobile */
+            margin-bottom: 1.5rem; /* Space before horizontal categories */
+            padding-left: 1rem; /* Match body padding */
+            padding-right: 1rem; /* Match body padding */
+        }
+        @media (min-width: 768px) {
+            .browse-categories-container {
+                justify-content: center; /* Center aligned for desktop */
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        .browse-categories-button {
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        .browse-categories-button:hover {
+            background-color: rgba(0, 166, 209, 0.2);
+            color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 166, 209, 0.3);
+        }
+
+        /* Search Bar Styling (Responsive) */
+        .search-bar {
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
+            border-radius: 0.75rem;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(0, 166, 209, 0.2);
+        }
+        @media (min-width: 768px) {
+            .search-bar {
+                padding: 0.75rem 1.25rem;
+                font-size: 1rem;
+            }
+            .search-bar:focus {
+                box-shadow: 0 0 0 3px rgba(0, 166, 209, 0.3);
+            }
+        }
+
+        /* Google Search Button */
+        .google-search-button {
+            background-color: #4285F4;
+            color: white;
+            border-radius: 0.75rem;
+            padding: 0.6rem 1rem;
+            border: 1px solid #4285F4;
+            transition: background-color 0.2s, transform 0.2s;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .google-search-button:hover {
+            background-color: #357ae8;
+            transform: translateY(-1px);
+        }
+        @media (min-width: 768px) {
+            .google-search-button {
+                padding: 0.75rem 1.25rem;
+                font-size: 1rem;
+                gap: 0.5rem;
+                transform: translateY(-2px);
+            }
+        }
+        /* Search container responsive adjustment */
+        .search-container-flex {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-bottom: 1.5rem; /* Adjusted for new button */
+        }
+        @media (min-width: 768px) {
+            .search-container-flex {
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+                padding-left: 0;
+                padding-right: 0;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        /* --- START OF REVISED GRID FOR MOVIES CONTAINER --- */
+        #movies-container {
+            display: grid;
+            /* Mobile: 2 columns */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem; /* Adjusted gap for mobile */
+            overflow-x: hidden;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        @media (min-width: 640px) { /* Small tablets: 3 columns */
+            #movies-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+        }
+        @media (min-width: 768px) { /* Medium tablets / Larger phones in landscape: 4 columns */
+            #movies-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        @media (min-width: 1024px) { /* Desktops: Still 4 columns as per your request */
+            #movies-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+            }
+        }
+        /* --- END OF REVISED GRID FOR MOVIES CONTAINER --- */
+
+
+        /* Loading Skeleton Grid - Responsive Columns */
+        .movie-card-skeleton-grid {
+            display: grid;
+            /* Mobile: 2 columns for skeleton */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .movie-card-skeleton-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .movie-card-skeleton-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .movie-card-skeleton-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+            }
+        }
+        .movie-card-skeleton-grid .movie-card:nth-child(n+13) {
+            display: none;
+        }
+
+        /* Pagination controls styling (Responsive) */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .pagination-controls button {
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.4rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            font-size: 0.9rem;
+        }
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: var(--accent-red);
+            transform: translateY(-1px);
+        }
+        .pagination-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .pagination-controls span {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        @media (min-width: 768px) {
+            .pagination-controls {
+                gap: 1.5rem;
+                margin-top: 2.5rem;
+            }
+            .pagination-controls button {
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                font-size: 1rem;
+            }
+            .pagination-controls button:hover:not(:disabled) {
+                transform: translateY(-2px);
+            }
+            .pagination-controls span {
+                font-size: 1.1rem;
+            }
+        }
+
+        footer {
+            margin-top: 2.5rem;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 768px) {
+            footer {
+                margin-top: 3rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Downloads Modal Styles (already responsive) */
+        .downloads-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .downloads-modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .downloads-content {
+            background-color: var(--primary-dark);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .downloads-content {
+                padding: 2rem;
+                max-width: 600px;
+                max-height: 80%;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            }
+        }
+        .downloads-modal.open .downloads-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .downloads-content .close-button {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .downloads-content .close-button:hover {
+            color: var(--accent-red);
+        }
+        .download-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            background-color: var(--secondary-dark);
+            padding: 0.6rem;
+            border-radius: 0.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @media (min-width: 768px) {
+            .download-item {
+                gap: 1rem;
+                margin-bottom: 1rem;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+            }
+        }
+        .download-item-thumbnail {
+            width: 50px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 0.3rem;
+        }
+        @media (min-width: 768px) {
+            .download-item-thumbnail {
+                width: 60px;
+                height: 90px;
+            }
+        }
+        .download-item-info {
+            flex-grow: 1;
+        }
+        .download-progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.4rem;
+        }
+        @media (min-width: 768px) {
+            .download-progress-bar {
+                height: 8px;
+                border-radius: 4px;
+                margin-top: 0.5rem;
+            }
+        }
+        .download-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-red));
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .download-progress {
+                border-radius: 4px;
+            }
+        }
+
+        /* Top Right Navigation (Responsive) */
+        .top-right-nav {
+            position: static;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        @media (min-width: 768px) {
+            .top-right-nav {
+                position: absolute;
+                top: 2rem;
+                right: 2rem;
+                width: auto;
+                justify-content: flex-end;
+                margin-bottom: 0;
+                padding: 0;
+                gap: 1.5rem;
+                flex-wrap: nowrap;
+            }
+        }
+        .top-right-nav button {
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.6rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .top-right-nav button:hover {
+            background-color: rgba(225, 0, 80, 0.1);
+            color: var(--accent-red);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) {
+            .top-right-nav button {
+                padding: 0.75rem 1rem;
+                border-radius: 0.75rem;
+                font-size: 1rem;
+                gap: 0.5rem;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* Ad Placeholder Styling (Responsive) */
+        .ad-placeholder {
+            background-color: #2a2a2a;
+            border: 1px dashed #666;
+            color: #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            width: 100%;
+            height: 60px;
+        }
+        .ad-placeholder.wide {
+            width: 100%;
+            height: 90px;
+        }
+        .ad-placeholder.modal-ad {
+            height: 80px;
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
+        @media (min-width: 768px) {
+            .ad-placeholder {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                height: 90px;
+            }
+            .ad-placeholder.modal-ad {
+                height: 100px;
+            }
+        }
+
+        /* Custom alert message */
+        .fixed.top-4.right-4 {
+            top: 1rem;
+            right: 1rem;
+            width: calc(100% - 2rem);
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 768px) {
+            .fixed.top-4.right-4 {
+                width: auto;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Categories Modal Specific Styles */
+        .categories-modal-content .category-list-button {
+            display: block; /* Make each button take full width */
+            width: 100%;
+            text-align: left;
+            background-color: var(--secondary-dark);
+            color: var(--text-light);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            transition: background-color 0.2s, transform 0.2s, color 0.2s;
+        }
+        .categories-modal-content .category-list-button:hover {
+            background-color: rgba(225, 0, 80, 0.2);
+            color: var(--accent-red);
+            transform: translateX(5px);
+        }
+        .categories-modal-content .category-list-button.active {
+            background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
+            color: white;
+            border-color: transparent;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body class="p-4 py-8 md:p-8 md:py-8">
+    <div class="max-w-screen-2xl mx-auto py-8 relative">
+        <div class="top-right-nav">
+            <button id="downloads-button" class="group">
+                <i class="fas fa-download group-hover:text-accent-red transition-colors"></i> Downloads
+            </button>
+            <button id="other-download-button" class="group">
+                <i class="fas fa-link group-hover:text-accent-blue transition-colors"></i> Other Download Link
+            </button>
+        </div>
+
+        <h1 class="text-center mb-8 md:mb-12 leading-none">
+            <span class="block movieflix-title">
+                <i class="fas fa-film mr-2 md:mr-4"></i>Movieflix
+            </span>
+            <span class="block subtitle-text">Your Ultimate Movie Destination</span>
+        </h1>
+
+        <div class="browse-categories-container">
+            <button id="browse-categories-button" class="browse-categories-button">
+                <i class="fas fa-bars mr-2"></i> Browse All Categories
+            </button>
+        </div>
+
+        <div class="flex flex-nowrap justify-start mb-8 md:mb-10 category-buttons-container">
+            <button class="category-button active" data-category="All">All Movies</button>
+            <button class="category-button" data-category="Bollywood">Bollywood</button>
+            <button class="category-button" data-category="Hollywood">Hollywood</button>
+            <button class="category-button" data-category="Hindi Dubbed">Hindi Dubbed</button>
+            <button class="category-button" data-category="South Indian">South Indian</button>
+            <button class="category-button" data-category="Odia Movie">Odia Movie</button>
+            <button class="category-button" data-category="Other">Other</button>
+            <button class="category-button" data-category="Comedy Shows">Comedy Shows</button>
+            <button class="category-button" data-category="18+ Series/Movies">18+ Series/Movies</button>
+        </div>
+
+        <div class="mb-10 md:mb-12 search-container-flex flex justify-center items-center">
+            <input type="text" id="search-bar" placeholder="Search movies by name..."
+                   class="search-bar w-full max-w-xl placeholder-gray-500">
+            <button id="google-search-button" class="google-search-button">
+                <i class="fab fa-google"></i> Search Google
+            </button>
+        </div>
+
+        <div class="ad-placeholder wide mb-6 md:mb-8">
+            <p>Advertisement Area (728x90)</p>
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'e8a3457b51948db0441d5bcec73c49f6',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/e8a3457b51948db0441d5bcec73c49f6/invoke.js"></script>
+        </div>
+
+        <div id="movies-container">
+            <div id="loading-skeleton" class="col-span-full movie-card-skeleton-grid">
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+                <div class="movie-card animate-pulse"><div class="movie-image bg-gray-700"></div><div class="p-4 space-y-2"><div class="h-4 bg-gray-600 rounded w-3/4"></div><div class="h-3 bg-gray-700 rounded w-1/2"></div></div></div>
+            </div>
+        </div>
+
+        <div class="pagination-controls" id="pagination-controls">
+            <button id="prev-page" class="flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Previous
+            </button>
+            <span id="page-info" class="text-lg">Page 1 of 1</span>
+            <button id="next-page" class="flex items-center">
+                Next <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <footer class="mt-16 text-center text-gray-500 text-sm py-4">
+            &copy; 2025 Movieflix. All rights reserved.
+        </footer>
+    </div>
+
+    <div id="downloads-modal" class="downloads-modal hidden">
+        <div class="downloads-content">
+            <button class="close-button" id="close-downloads-modal">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">Your Downloads</h2>
+            <div id="downloads-list" class="space-y-4">
+                <p class="text-center text-gray-400" id="no-downloads-message">No downloads yet. Start downloading your favorite movies!</p>
+            </div>
+            <div class="ad-placeholder wide modal-ad mt-6">
+                <p>Ad Spot (Inside Downloads Modal)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="categories-modal" class="downloads-modal hidden">
+        <div class="downloads-content categories-modal-content">
+            <button class="close-button" id="close-categories-modal">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">Browse All Categories</h2>
+            <div id="all-categories-list" class="space-y-2">
+                </div>
+            <div class="ad-placeholder wide modal-ad mt-6">
+                <p>Ad Spot (Inside Categories Modal)</p>
+            </div>
+        </div>
+    </div>
+    <div id="movie-viewer-modal" class="hidden"></div>
+
+    <script type="module">
+        // Firebase Modular SDK imports: These URLs are from Google's CDN for Firebase JavaScript SDK.
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, query, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+        // Your provided Firebase configuration.
+        const firebaseConfig = {
+            apiKey: "AIzaSyCKakPhdXkNZYrNgEczhWLsMCBBhErQBnw",
+            authDomain: "movieflix-8cbe6.firebaseapp.com",
+            databaseURL: "https://movieflix-8cbe6-default-rtdb.firebaseio.com",
+            projectId: "movieflix-8cbe6",
+            storageBucket: "movieflix-8cbe6.firebasestorage.app",
+            messagingSenderId: "735998404941",
+            appId: "1:735998404941:web:b1fe2714b20f92df6faf04",
+            measurementId: "G-SCQDD49PP2"
+        };
+
+        // Initialize Firebase app directly with the user-provided configuration.
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const analytics = getAnalytics(app); // Initialize analytics
+
+        const appId = firebaseConfig.appId;
+
+        let userId = null;
+        let moviesData = [];
+        let currentCategory = 'All';
+        let filteredAndSearchedMovies = [];
+        let moviesPerPage = 12;
+        let currentPage = 1;
+
+        const moviesContainer = document.getElementById('movies-container');
+        const loadingSkeleton = document.getElementById('loading-skeleton');
+        const searchBar = document.getElementById('search-bar');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const pageInfoSpan = document.getElementById('page-info');
+        const downloadsButton = document.getElementById('downloads-button');
+        const downloadsModal = document.getElementById('downloads-modal');
+        const closeDownloadsModalBtn = document.getElementById('close-downloads-modal');
+        const downloadsList = document.getElementById('downloads-list');
+        const noDownloadsMessage = document.getElementById('no-downloads-message');
+        const googleSearchButton = document.getElementById('google-search-button');
+        const otherDownloadButton = document.getElementById('other-download-button');
+
+        // NEW Elements for Categories Modal
+        const browseCategoriesButton = document.getElementById('browse-categories-button');
+        const categoriesModal = document.getElementById('categories-modal');
+        const closeCategoriesModalBtn = document.getElementById('close-categories-modal');
+        const allCategoriesList = document.getElementById('all-categories-list');
+
+        let userDownloads = [];
+        let allUniqueCategories = []; // To store all unique categories for the modal
+
+        // Function to simulate a download
+        const simulateDownload = (movie) => {
+            if (userDownloads.find(d => d.id === movie.id)) {
+                showMessage(`"${movie.title}" is already in your downloads!`, 'info');
+                return;
+            }
+
+            const downloadItem = {
+                id: movie.id,
+                title: movie.title,
+                posterUrl: movie.posterUrl,
+                progress: 0,
+                status: 'downloading'
+            };
+            userDownloads.push(downloadItem);
+            showMessage(`Download started for "${movie.title}"!`, 'info');
+            updateDownloadsList();
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    downloadItem.status = 'completed';
+                    showMessage(`"${movie.title}" download completed!`, 'info');
+                    clearInterval(interval);
+                }
+                downloadItem.progress = progress;
+                updateDownloadsList();
+            }, 500);
+        };
+
+        // Function to show custom alert/message
+        const showMessage = (message, type = 'info') => {
+            const messageBox = document.createElement('div');
+            messageBox.textContent = message;
+            messageBox.className = `fixed top-4 right-4 p-3 rounded-md shadow-lg z-[100] ${type === 'error' ? 'bg-red-600' : 'bg-blue-600'} text-white font-semibold text-sm`;
+            document.body.appendChild(messageBox);
+            setTimeout(() => {
+                messageBox.remove();
+            }, 3000);
+        };
+
+        // Function to update the downloads list in the modal
+        const updateDownloadsList = () => {
+            downloadsList.innerHTML = '';
+            if (userDownloads.length === 0) {
+                noDownloadsMessage.classList.remove('hidden');
+                return;
+            }
+            noDownloadsMessage.classList.add('hidden');
+
+            userDownloads.forEach(download => {
+                const downloadDiv = document.createElement('div');
+                downloadDiv.className = 'download-item';
+                downloadDiv.innerHTML = `
+                    <img src="${download.posterUrl || 'https://placehold.co/60x90/2a2a2a/b0b0b0?text=DL'}" alt="${download.title}" class="download-item-thumbnail">
+                    <div class="download-item-info">
+                        <h4 class="text-md font-semibold text-white">${download.title}</h4>
+                        <p class="text-sm text-gray-400">${download.status === 'completed' ? 'Completed!' : `Downloading: ${download.progress}%`}</p>
+                        <div class="download-progress-bar">
+                            <div class="download-progress" style="width: ${download.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+                downloadsList.appendChild(downloadDiv);
+            });
+        };
+
+        // Authentication Function
+        const authenticateUser = async () => {
+            try {
+                await signInAnonymously(auth);
+                console.log("Authentication successful using anonymous sign-in.");
+                showMessage("Signed in successfully!", "info");
+            } catch (error) {
+                console.error("Authentication error:", error);
+                const errorMessage = `Authentication failed: ${error.message}. Please refresh or check console for details.`;
+                if (error.code === "auth/api-key-not-valid" || error.code === "auth/configuration-not-found" || error.code === "auth/invalid-api-key") {
+                    showMessage(`Authentication failed: Invalid Firebase API Key or config. Please check your Firebase project settings.`, "error");
+                } else if (error.code === "auth/unauthorized-domain") {
+                    showMessage(`Authentication failed: Unauthorized domain. Add '${window.location.hostname}' to Firebase Auth authorized domains.`, "error");
+                } else if (error.code === "auth/network-request-failed") {
+                    showMessage(`Authentication failed: Network error. Please check your internet connection.`, "error");
+                } else if (error.code === "auth/operation-not-allowed") {
+                    showMessage(`Authentication failed: Anonymous sign-in is not enabled in Firebase project settings.`, "error");
+                }
+                else {
+                    showMessage(errorMessage, "error");
+                }
+            }
+        };
+
+        // Listen for authentication state changes
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userId = user.uid;
+                console.log("User authenticated:", userId);
+                fetchMovies(); // Once authenticated, fetch movies
+            } else {
+                userId = null;
+                console.log("No user authenticated. Attempting authentication...");
+                authenticateUser();
+            }
+        });
+
+        // Function to fetch movies from Firestore
+        const fetchMovies = () => {
+            if (!userId) {
+                console.log("Waiting for user authentication before fetching movies.");
+                return;
+            }
+
+            loadingSkeleton.classList.remove('hidden');
+            moviesContainer.innerHTML = '';
+
+            const moviesCollectionRef = collection(db, `artifacts/${appId}/public/data/movies`);
+            const q = query(moviesCollectionRef);
+
+            onSnapshot(q, (snapshot) => {
+                const fetchedMovies = [];
+                if (snapshot.empty) {
+                    console.log("No movies found in the collection.");
+                }
+                snapshot.forEach((doc) => {
+                    fetchedMovies.push({ id: doc.id, ...doc.data() });
+                });
+                moviesData = fetchedMovies;
+
+                // Extract and populate unique categories
+                const categories = new Set(['All']); // Always include 'All'
+                moviesData.forEach(movie => {
+                    if (movie.category) {
+                        categories.add(movie.category);
+                    }
+                });
+                allUniqueCategories = Array.from(categories).sort(); // Sort categories alphabetically
+                populateCategoriesModal(); // Populate the new categories modal
+
+                currentPage = 1;
+                filterAndDisplayMovies();
+                loadingSkeleton.classList.add('hidden');
+                console.log("Movies fetched successfully:", moviesData);
+            }, (error) => {
+                console.error("Error fetching movies from Firestore:", error);
+                const errorMessage = `Failed to load movies: ${error.message}. Please try again later.`;
+                if (error.code === "permission-denied") {
+                    showMessage("Access denied to movies data. Please check Firestore security rules.", "error");
+                } else if (error.code === "unavailable") {
+                    showMessage("Firestore is temporarily unavailable. Check network or try again.", "error");
+                } else if (error.code === "not-found") {
+                    showMessage("Movies collection not found. Check the Firestore path in your code.", "error");
+                }
+                else {
+                    showMessage(errorMessage, "error");
+                }
+                loadingSkeleton.classList.add('hidden');
+                moviesContainer.innerHTML = '<p class="text-center text-gray-400 col-span-full text-lg mt-8">Oops! Movies couldn\'t be loaded. 😞</p>';
+            });
+        };
+
+        // Function to filter movies based on category and search query
+        const filterAndDisplayMovies = () => {
+            const searchQuery = searchBar.value.toLowerCase().trim();
+            let tempFilteredMovies = [];
+
+            if (currentCategory === 'All') {
+                tempFilteredMovies = moviesData;
+            } else {
+                tempFilteredMovies = moviesData.filter(movie => movie.category === currentCategory);
+            }
+
+            if (searchQuery) {
+                tempFilteredMovies = tempFilteredMovies.filter(movie =>
+                    (movie.title && movie.title.toLowerCase().includes(searchQuery))
+                );
+            }
+            filteredAndSearchedMovies = tempFilteredMovies;
+            displayMovies(filteredAndSearchedMovies);
+            updatePaginationControls();
+        };
+
+        // Function to display movies for the current page in the UI
+        const displayMovies = (moviesToShow) => {
+            moviesContainer.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * moviesPerPage;
+            const endIndex = startIndex + moviesPerPage;
+            const moviesOnCurrentPage = moviesToShow.slice(startIndex, endIndex);
+
+            if (moviesOnCurrentPage.length === 0) {
+                moviesContainer.innerHTML = `
+                    <div class="col-span-full text-center py-10">
+                        <p class="text-gray-400 text-xl font-medium mb-4">No movies found matching your criteria. 😔</p>
+                        <p class="text-gray-500 text-md">Try a different search or category!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+            moviesOnCurrentPage.forEach(movie => {
+                const movieCardDiv = document.createElement('div');
+                movieCardDiv.className = "movie-card flex flex-col";
+                movieCardDiv.dataset.movieUrl = movie.movieUrl || '';
+                movieCardDiv.dataset.movieTitle = movie.title || 'Unknown Movie';
+                movieCardDiv.innerHTML = `
+                    <img src="${movie.posterUrl || 'https://placehold.co/400x400/2a2a2a/b0b0b0?text=No+Image'}" alt="${movie.title || 'Movie Poster'}" class="movie-image"
+                        onerror="this.onerror=null;this.src='https://placehold.co/400x400/2a2a2a/b0b0b0?text=No+Image+Available'; this.style.objectFit='contain';">
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h3 class="text-white font-semibold line-clamp-2">${movie.title || 'Unknown Title'}</h3>
+                        <p class="text-sm text-gray-400 mt-1 flex-grow"><i class="fas fa-tag mr-2 text-purple-400"></i>${movie.category || 'N/A'}</p>
+                        <button class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition-colors self-start text-sm download-button" data-movie-id="${movie.id}" data-movie-title="${movie.title}" data-movie-poster="${movie.posterUrl}">
+                            <i class="fas fa-download mr-2"></i> Download
+                        </button>
+                    </div>
+                `;
+                fragment.appendChild(movieCardDiv);
+            });
+            moviesContainer.appendChild(fragment);
+
+            document.querySelectorAll('.download-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const movieId = e.currentTarget.dataset.movieId;
+                    const movieTitle = e.currentTarget.dataset.movieTitle;
+                    const moviePoster = e.currentTarget.dataset.moviePoster;
+                    simulateDownload({ id: movieId, title: movieTitle, posterUrl: moviePoster });
+                });
+            });
+
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (event) => {
+                    const movieUrl = event.currentTarget.dataset.movieUrl;
+                    const movieTitle = event.currentTarget.dataset.movieTitle;
+
+                    if (movieUrl) {
+                        window.open(movieUrl, '_blank');
+                        console.log(`Redirecting to: ${movieUrl}`);
+                    } else {
+                        showMessage("Movie URL not available for this movie.", "error");
+                    }
+                });
+            });
+        };
+
+        // Function to update pagination buttons and page info
+        const updatePaginationControls = () => {
+            const totalPages = Math.ceil(filteredAndSearchedMovies.length / moviesPerPage);
+            pageInfoSpan.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        };
+
+        // Function to navigate to a specific page
+        const goToPage = (page) => {
+            const totalPages = Math.ceil(filteredAndSearchedMovies.length / moviesPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayMovies(filteredAndSearchedMovies);
+                updatePaginationControls();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // Event listeners for horizontal category buttons
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('#all-categories-list .category-list-button').forEach(btn => btn.classList.remove('active')); // Also deactivate modal buttons
+                button.classList.add('active');
+                currentCategory = button.dataset.category;
+                currentPage = 1;
+                filterAndDisplayMovies();
+            });
+        });
+
+        // Event listener for Search Bar input
+        searchBar.addEventListener('input', () => {
+            currentPage = 1;
+            filterAndDisplayMovies();
+        });
+
+        // Event listener for Google Search Button
+        googleSearchButton.addEventListener('click', () => {
+            const searchQuery = searchBar.value.trim();
+            if (searchQuery) {
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery + " movie")}`, '_blank');
+            } else {
+                showMessage("Please enter something to search on Google.", "info");
+            }
+        });
+
+        // Event listeners for Downloads Modal
+        downloadsButton.addEventListener('click', () => {
+            downloadsModal.classList.add('open');
+            downloadsModal.classList.remove('hidden');
+            updateDownloadsList();
+        });
+
+        closeDownloadsModalBtn.addEventListener('click', () => {
+            downloadsModal.classList.remove('open');
+            setTimeout(() => {
+                downloadsModal.classList.add('hidden');
+            }, 300);
+        });
+
+        downloadsModal.addEventListener('click', (e) => {
+            if (e.target === downloadsModal) {
+                downloadsModal.classList.remove('open');
+                setTimeout(() => {
+                    downloadsModal.classList.add('hidden');
+                }, 300);
+            }
+        });
+
+        // Event listener for Other Download Link Button
+        otherDownloadButton.addEventListener('click', () => {
+            window.open('https://en1.savefrom.net/13RZ/', '_blank');
+            showMessage("Opening external video downloader...", "info");
+        });
+
+        // Event listeners for pagination buttons
+        prevPageBtn.addEventListener('click', () => {
+            goToPage(currentPage - 1);
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            goToPage(currentPage + 1);
+        });
+
+        // NEW: Functions for Categories Modal
+        const populateCategoriesModal = () => {
+            allCategoriesList.innerHTML = ''; // Clear previous list
+            allUniqueCategories.forEach(category => {
+                const button = document.createElement('button');
+                button.textContent = category;
+                button.className = 'category-list-button';
+                button.dataset.category = category;
+
+                // Set active class if it's the current selected category
+                if (category === currentCategory) {
+                    button.classList.add('active');
+                }
+
+                button.addEventListener('click', () => {
+                    // Update active state in both horizontal and modal buttons
+                    document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('#all-categories-list .category-list-button').forEach(btn => btn.classList.remove('active'));
+
+                    button.classList.add('active');
+                    const horizontalButton = document.querySelector(`.category-button[data-category="${category}"]`);
+                    if (horizontalButton) {
+                        horizontalButton.classList.add('active');
+                    }
+
+                    currentCategory = category;
+                    currentPage = 1;
+                    filterAndDisplayMovies();
+                    closeCategoriesModal();
+                });
+                allCategoriesList.appendChild(button);
+            });
+        };
+
+        const openCategoriesModal = () => {
+            categoriesModal.classList.add('open');
+            categoriesModal.classList.remove('hidden');
+            populateCategoriesModal(); // Ensure categories are updated and active status is correct
+        };
+
+        const closeCategoriesModal = () => {
+            categoriesModal.classList.remove('open');
+            setTimeout(() => {
+                categoriesModal.classList.add('hidden');
+            }, 300);
+        };
+
+        // NEW: Event listeners for Categories Modal button
+        browseCategoriesButton.addEventListener('click', openCategoriesModal);
+        closeCategoriesModalBtn.addEventListener('click', closeCategoriesModal);
+        categoriesModal.addEventListener('click', (e) => {
+            if (e.target === categoriesModal) {
+                closeCategoriesModal();
+            }
+        });
+
+        // Initial authentication attempt
+        authenticateUser();
+
+    </script>
+    <script type='text/javascript' src='//pl27047173.profitableratecpm.com/94/f9/c1/94f9c11078e9d50e593fada8181cc18e.js'></script>
+    <script async="async" data-cfasync="false" src="//pl27045828.profitableratecpm.com/ef38e6529fcfb12f0991667c4486694d/invoke.js"></script>
+    <div id="container-ef38e6529fcfb12f0991667c4486694d"></div>
+</body>
+</html>
